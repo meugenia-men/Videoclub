@@ -5,7 +5,7 @@ import enums.Genre;
 
 import java.util.Comparator;
 
-public class Film  implements Comparable<Film> {
+public class Film {
     private String title;
     private Integer year;
     private Integer minutes;
@@ -14,7 +14,7 @@ public class Film  implements Comparable<Film> {
     private String countryInitials;
     private String description;
     private Integer copiesNumber;
-    private Integer rentedAmount = 0;
+
 
     public Film() {
     }
@@ -94,31 +94,19 @@ public class Film  implements Comparable<Film> {
         this.copiesNumber = copiesNumber;
     }
 
-    public Integer getRentedAmount() {
-        return rentedAmount;
-    }
-
-    public void setRentedAmount(Integer rentedAmount) {
-        this.rentedAmount = rentedAmount;
-    }
 
     @Override
     public String toString() {
-        return "PELICULA\n" +
+        return "_____________________________________________________________________________________________________________________\n"+
                 "Titulo = '" + title + '\'' +
                 "\nAño = " + year +
-                "\nDuracion = " + minutes + "minutos "+
+                "\nDuracion = " + minutes + " minutos "+
                 "\nClasificacion = " + audienceClassification +
                 "\nGenero = " + genre +
                 "\nNacionalidad = '" + countryInitials + '\'' +
                 "\nDescripcion = '" + description + '\'' +
                 "\nCopias disponibles = [" + copiesNumber +
                 ']';
-    }
-
-    @Override
-    public int compareTo(Film o) {
-        return this.getRentedAmount().compareTo(o.getRentedAmount());
     }
 
 }

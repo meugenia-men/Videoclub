@@ -1,5 +1,8 @@
 package models;
 
+import enums.Genre;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -77,16 +80,16 @@ public class VideoClub {
         return null;
     }
 
-    public String toStringTickets(){
-        String data = "Lista de alquileres generados : \n";
-        for (Ticket t : tickets){
-            data += t.toString() +"\n_____________________________________________________________________________________________________________\n ";
+    public String toStringTickets() {
+        String data = "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Lista de alquileres  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+        for (Ticket t : tickets) {
+            data += t.toString() + "\n________________________________________________________________________________________________________________________________________\n ";
         }
         return data;
     }
 
-    public String searchTicketsForClient(Client c){
-        if (this.tickets != null) {
+    public String searchTicketsForClient(Client c) {
+        if (tickets != null) {
             for (Ticket t : tickets) {
                 if (t.getClient().equals(c)) {
                     System.out.println(t.toString());
@@ -97,5 +100,63 @@ public class VideoClub {
         return null;
     }
 
+    public Film bestFilm(List<Film> x) {
+        Integer rentNumber;
+        Integer max = 0;
+        Film bestFilm = new Film();
+
+        for (Film f : x) {
+            rentNumber = 0;
+            for (Ticket t : tickets) {
+                if (f.getTitle().equalsIgnoreCase(t.getFilm().getTitle())) {
+                    rentNumber++;
+                }
+            }
+            if (rentNumber > max) {
+                max = rentNumber;
+                bestFilm = f;
+            }
+        }
+        return bestFilm;
+    }
+
+    public List<Film> filmsListForGenre() {
+
+        List<Film> aux = films;
+        List<Film> filmsXGenre = new ArrayList<>();
+
+        while (!aux.isEmpty()) {
+            Genre firstGenre = aux.getFirst().getGenre();
+            for (Film x : aux) {
+                if (x.getGenre().equals(firstGenre)) {
+                    filmsXGenre.add(x);
+                    aux.remove(x);
+                } else {
+                    aux.addFirst(x);
+                }
+            }
+        }
+
+        return filmsXGenre;
+    }
+
+
+    public List<Film> filmsListForGenreAndPopularity() {
+        this.setFilms(this.filmsListForGenre());
+        List<Film> newList = new ArrayList<>();
+
+        while (!films.isEmpty()) {
+            Genre firstGenre = films.getFirst().getGenre();
+            Integer position = 0;
+            while (films.get(position).getGenre().equals(firstGenre)) {
+                newList.add(films.get(position));
+                films.remove(films.get(position));
+                position++;
+            }
+
+
+        }
+        return newList;
+    }
 
 }

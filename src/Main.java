@@ -4,10 +4,13 @@ import models.Client;
 import models.Film;
 import models.Ticket;
 import models.VideoClub;
+
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -46,7 +49,7 @@ public class Main {
         Film f = new Film();
         Client c;
         Scanner sc = new Scanner(System.in);
-        int opc;
+        Integer opc;
 
         do {
             //region MENU
@@ -66,29 +69,43 @@ public class Main {
             sc.nextLine();
             //endregion
 
+            String ok;
             switch (opc) {
                 case 1:
-                    System.out.println("___________________________________________________");
                     //region Ingreso de un nuevo cliente
-                    System.out.println("Ingrese el nombre : ");
-                    String nameNew = sc.nextLine();
-                    System.out.println("Ingrese el DNI :");
-                    String dniNew = sc.nextLine();
-                    System.out.println("Ingrese la direccion : ");
-                    String addressNew = sc.nextLine();
-                    System.out.println("Ingrese el telefono : ");
-                    Long phoneNew = sc.nextLong();
+                    do {
+                        System.out.println("_____________________________________________________________________________________");
+                        System.out.println("Ingrese el nombre : ");
+                        String nameNew = sc.nextLine();
+                        System.out.println("Ingrese el DNI :");
+                        String dniNew = sc.nextLine();
+                        System.out.println("Ingrese la direccion : ");
+                        String addressNew = sc.nextLine();
+                        System.out.println("Ingrese el telefono : ");
+                        Long phoneNew = sc.nextLong();
 
-                    Client cNew = new Client(nameNew, dniNew, addressNew, phoneNew);
+                        Client cNew = new Client(nameNew, dniNew, addressNew, phoneNew);
 
-                    videoClub.getClient().add(cNew);
-                    System.out.println("Cliente Ingresado con exito!");
-                    sc.nextLine();
+                        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Datos del cliente ingresado >>>>>>>>>>>>>>>>>>>>>>>>");
+                        System.out.println(cNew);
+                        System.out.println("------------> Los datos son correctos? si o no");
+                        sc.nextLine();
+                        ok = sc.nextLine();
+
+                        if (ok.equalsIgnoreCase("si")) {
+                            videoClub.getClient().add(cNew);
+                            System.out.println("Cliente Ingresado con exito!");
+                            sc.nextLine();
+                            System.out.println("_____________________________________________________________________________________");
+                        } else {
+                            System.out.println("Ingrese los datos nuevamente ----------------->");
+                        }
+                    } while (ok.equalsIgnoreCase("no"));
                     //endregion
                     break;
                 case 2:
-                    System.out.println("___________________________________________________");
                     //region Ingreso de un alquiler
+                    System.out.println("_____________________________________________________________________________________");
                     int tries = 0;
                     //region Busco pelicula
                     do {
@@ -118,16 +135,16 @@ public class Main {
                         if (c != null) {
                             f.setCopiesNumber(f.getCopiesNumber() - 1);// disminuyo la disponibilidad
                             Ticket ticket1 = new Ticket(c, f);//genero un ticket de alquiler
-                            System.out.println("_____________________________________________");
+                            System.out.println("_____________________________________________________________________________________");
 
-                            System.out.println(ticket1.toString());
+                            System.out.println(ticket1);
                             videoClub.getTickets().add(ticket1);
-                            f.setRentedAmount(f.getRentedAmount()+1);
                             System.out.println("Alquiler exitoso");
+                            System.out.println("_____________________________________________________________________________________");
                             sc.nextLine();
 
                         } else {
-                            System.out.println("CLiente no encontrado ir al menu opc 1 ...");
+                            System.out.println("CLiente no encontrado ir al menu opcion 1 ...");
                             sc.nextLine();
                         }
                     }
@@ -142,27 +159,28 @@ public class Main {
                     Ticket t = videoClub.searchTicket(searchingDni, filmTitle);
                     if (t != null) {
                         System.out.println("Devolucion de pelicula exitosa!");
-                        t.getFilm().setCopiesNumber(t.getFilm().getCopiesNumber()+1);
+                        t.getFilm().setCopiesNumber(t.getFilm().getCopiesNumber() + 1);
                     }
                     System.out.println();
                     //endregion
                     break;
                 case 4:
-                    //region Lista de alquileres
+                    //region Lista de alquileres vigentes
                     System.out.println(videoClub.toStringTickets());
                     sc.nextLine();
                     //endregion
                     break;
                 case 5:
                     //region Lista de devoluciones de hoy
+                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Lista de devoluciones de HOY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                     int cant = 0;
-                    for (Ticket ti : videoClub.getTickets()){
-                        if (LocalDate.now().equals(ti.getReturnDate())){
-                            System.out.println(ti.toString());
-                            System.out.println("--------------------------------------------------------------------");
+                    for (Ticket ti : videoClub.getTickets()) {
+                        if (LocalDate.now().equals(ti.getReturnDate())) {
+                            System.out.println(ti);
+                            System.out.println("               --------------------------------------------------------------------");
                             cant++;
                         }
-                        if (cant == 0){
+                        if (cant == 0) {
                             System.out.println("No hay devoluciones en el dia de la fecha");
                         }
                         sc.nextLine();
@@ -171,10 +189,11 @@ public class Main {
                     break;
                 case 6:
                     //region Lista de alquiler por cliente
+                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Lista de alquileres por cliente >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                     System.out.println("Ingrese el DNI del cliente : ");
                     String dni = sc.nextLine();
                     Client cli = videoClub.searchClient(dni);
-                    if (cli != null){
+                    if (cli != null) {
                         videoClub.searchTicketsForClient(cli);
                         sc.nextLine();
                     }
@@ -182,16 +201,18 @@ public class Main {
                     break;
                 case 7:
                     //region Pelicula mas alquilada
-                    Collections.sort(videoClub.getFilms());
-                    System.out.println(videoClub.getFilms().getLast());
-                    sc.nextLine();
+                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Pelicula mas alquilada >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                    Film bestFilm = videoClub.bestFilm(videoClub.getFilms());
+                    System.out.println(bestFilm.toString());
+                    System.out.println("____________________________________________________________________________________________");
                     //endregion
                     break;
                 case 8:
                     //region Detalle de pelicula
+                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Detalle de la pelicula >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                     System.out.println("Ingrese la pelicula : ");
                     String title = sc.nextLine();
-                    if (videoClub.searchFilm(title) != null){
+                    if (videoClub.searchFilm(title) != null) {
                         System.out.println((videoClub.searchFilm(title)).toString());
                         sc.nextLine();
                     }
@@ -200,6 +221,33 @@ public class Main {
                 case 9:
                     //region Lista de peliculas ordenada por genero y popularidad
 
+                    /// primero las ordeno por popularidad si es que hay lista de tickets/alquileres
+
+                    if (!videoClub.getTickets().isEmpty()) { // verifico que tenga lista de tickets
+                        List<Film> aux = videoClub.getFilms();
+                        List<Film> inOrder = new ArrayList<>();
+                        while (!aux.isEmpty()) {
+                            Film popular = videoClub.bestFilm(aux);
+                            if (popular.getTitle() == null){
+                                break;
+                            }
+                            inOrder.add(popular);
+                            aux.remove(popular);
+                        }
+
+                        if (videoClub.getFilms().size() != inOrder.size()){ // verifico que la lista in order me quede completa incluso con las peliculas que nunca nadie alquilo
+                            for (Film filmInOrder : inOrder){
+                                videoClub.getFilms().remove(filmInOrder);
+                            }
+                            inOrder.addAll(videoClub.getFilms());
+                        }
+                        videoClub.setFilms(inOrder); //seteo la lista original y la reemplazo por la lista ordenada por popularidad
+                    }
+                    /// despues las ordeno por genero
+                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>> Lista de peliculas ordenadas por genero <<<<<<<<<<<<<<<<<<<<<<<");
+                    videoClub.getFilms().sort(Comparator.comparing(Film::getGenre));
+                    videoClub.getFilms().forEach(lista -> System.out.println(lista.toString()));
+                    System.out.println("_____________________________________________________________________________________________________________________");
                     //endregion
                     break;
                 case 0:

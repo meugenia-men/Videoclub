@@ -50,4 +50,12 @@ public class Client {
         this.phone = phone;
     }
 
+    @Override
+    public String toString() {
+        return "[NOMBRE ='" + name + '\'' +
+                ", DNI ='" + dni + '\'' +
+                ", DIRECCION ='" + address + '\'' +
+                ", TELEFONO =" + phone +
+                ']';
+    }
 }
